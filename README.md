@@ -6,7 +6,7 @@ Class to create TAR archives
 
 <b>Example</b>
 
-<code>
+```c++
 
 #include "tar/tar.h"
 #include <iostream>
@@ -33,4 +33,4 @@ int main(int argc,char** argv){
 	return 0;
 }
 
-</code>
+```
