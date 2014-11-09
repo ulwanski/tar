@@ -44,7 +44,6 @@ void Tar::_init(void* header){
     std::sprintf(TARHEADER->magic,"ustar  ");
     std::sprintf(TARHEADER->mtime, "%011lo", time(NULL));
     std::sprintf(TARHEADER->mode, "%07o", 0777);
-	//std::sprintf(TARHEADER->name,"%s", "Login?"); // max 32 bytes?
     std::sprintf(TARHEADER->gname,"%s","users");
 }
 
@@ -84,8 +83,6 @@ void Tar::_endRecord(std::size_t len){
 
 void Tar::close(){
     _finished=true;
-
-    //The end of the archive is indicated by two blocks filled with binary zeros
     PosixTarHeader header;
     std::memset((void*)&header, 0, sizeof(PosixTarHeader));
     std::fwrite((const char*)&header, sizeof(char), sizeof(PosixTarHeader), out);
