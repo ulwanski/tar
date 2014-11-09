@@ -1,4 +1,4 @@
-tar class
+class Tar()
 ===
 
 Class to create TAR archives
