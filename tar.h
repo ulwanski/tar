@@ -1,6 +1,10 @@
 #ifndef TARBALLLIB_H_
 #define TARBALLLIB_H_
 
+#ifndef EXIT_SUCCESS
+#define EXIT_SUCCESS 0
+#endif
+
 #include <cstdio>
 #include <cstring>
 #include <cerrno>
