@@ -28,7 +28,7 @@ int main(int argc,char** argv){
 	tar.close();
 
 	/* we're done */
-	return EXIT_SUCCESS;;
+	return EXIT_SUCCESS;
 }
 
 ```
