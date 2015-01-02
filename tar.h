@@ -1,6 +1,8 @@
 #ifndef TARBALLLIB_H_
 #define TARBALLLIB_H_
 
+#define _CRT_SECURE_NO_WARNINGS
+
 #ifndef EXIT_SUCCESS
 #define EXIT_SUCCESS 0
 #endif
