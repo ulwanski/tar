@@ -1,33 +1,25 @@
 #include "tar.h"
 #define TARHEADER static_cast<PosixTarHeader*>(header)
 
-struct PosixTarHeader {
-	char name[100];
-	char mode[8];
-	char uid[8];
-	char gid[8];
-	char size[12];
-	char mtime[12];
-	char checksum[8];
-	char typeflag[1];
-	char linkname[100];
-	char magic[6];
-	char version[2];
-	char uname[32];
-	char gname[32];
-	char devmajor[8];
-	char devminor[8];
-	char prefix[155];
-	char pad[12];
-};
-
 Tar::Tar(const char *filename): _finished(false){
-
 	this->out = std::fopen(filename, "wb");
 	if(out == NULL){
 		throw( "Cannot open output");
 	}
+	this->_closeFile = true;
+	this->_finished  = true;
+    if(sizeof(PosixTarHeader)!=512){
+		throw(sizeof(PosixTarHeader));
+	}
+}
 
+Tar::Tar(std::FILE *file): _finished(false){
+	this->out = file;
+	if(out == NULL){
+		throw( "Cannot open output");
+	}
+	this->_closeFile = false;
+	this->_finished  = true;
     if(sizeof(PosixTarHeader)!=512){
 		throw(sizeof(PosixTarHeader));
 	}
@@ -82,13 +74,14 @@ void Tar::_endRecord(std::size_t len){
 }
 
 void Tar::close(){
-    _finished=true;
-    PosixTarHeader header;
-    std::memset((void*)&header, 0, sizeof(PosixTarHeader));
-    std::fwrite((const char*)&header, sizeof(char), sizeof(PosixTarHeader), out);
-    std::fwrite((const char*)&header, sizeof(char), sizeof(PosixTarHeader), out);
-	
-	std::fclose(this->out);
+	if(!_finished){
+		_finished=true;
+		PosixTarHeader header;
+		std::memset((void*)&header, 0, sizeof(PosixTarHeader));
+		std::fwrite((const char*)&header, sizeof(char), sizeof(PosixTarHeader), out);
+		std::fwrite((const char*)&header, sizeof(char), sizeof(PosixTarHeader), out);
+	}
+	if(this->_closeFile) std::fclose(this->out);
 }
 
 void Tar::put(const char* filename, const std::string& s){
@@ -141,4 +134,11 @@ void Tar::putFile(const char* filename, const char* nameInArchive){
     std::fclose(in);
 
     _endRecord(total);
+}
+
+long int Tar::fileLength(std::FILE *file){
+	std::fseek(file, 0L, SEEK_END);
+    long int len = std::ftell(file);
+    std::fseek(file, 0L, SEEK_SET);
+	return len;
 }
